@@ -1,0 +1,30 @@
+{
+  "greetings": [
+    {
+      "say": "Hello! Welcome to Medical Store."
+    },
+    {
+      "say": "Easiest way to buy medicines online"
+    },
+    {
+      "say": "Please select your city",
+      "action": {
+        "type": "HB.QUICK_REPLIES",
+        "items": [
+          {
+            "name": "Delhi",
+            "postback": "CITY_SELECTION"
+          },
+          {
+            "name": "Ahmedabad",
+            "postback": "CITY_SELECTION"
+          },
+          {
+            "name": "Mumbai",
+            "postback": "CITY_SELECTION"
+          }
+        ]
+      }
+    }
+  ]
+}

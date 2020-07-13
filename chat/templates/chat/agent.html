@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <title>Agent</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+  <link rel='stylesheet'
+    href='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.3/jquery.mCustomScrollbar.min.css'>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
+
+  <style>
+    #invite-records {
+      height: 100%;
+      display: block;
+      margin-left: 9%;
+      margin-right: 9%;
+      margin-top: 1%;
+      margin-bottom: 1%;
+    }
+
+    #card-invite {
+      height: 50px;
+      border: 0em;
+      cursor: pointer;
+      margin: 1%;
+      border-color: gray;
+      border-radius: 1em;
+      background-color: aquamarine;
+    }
+
+    #card-invite #card-invite-detail {
+      text-align: start;
+      color: #424242;
+      font-size: 1.5em;
+      margin-top: 13px;
+      margin-left: 13px;
+    }
+
+    #btn {
+      border: none;
+      background-color: inherit;
+      padding: 14px 28px;
+      font-size: 16px;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    /* On mouse-over */
+    #btn:hover {
+      background: #eee;
+    }
+  </style>
+
+
+</head>
+
+<body>
+
+  <p id="agent_id" style="display: none;">{{agent_id}}</p>
+
+
+  <div id="invite-records">
+
+    <!-- <div id="card-invite">
+      <p id="card-invite-detail">mayur@mailinator.com</p>
+    </div> -->
+
+  </div>
+
+  <!-- <div class="bg"></div> -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script
+    src='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.3/jquery.mCustomScrollbar.concat.min.js'></script>
+  <script src="{% static 'chat/js/agent.js' %}"></script>
+
+
+</body>
+
+</html>
