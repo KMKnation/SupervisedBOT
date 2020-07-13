@@ -23,13 +23,14 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
-from chat.views import agent
+from chat.views import agent, FileUploadView
 from mysite.views import home
 
 urlpatterns = [
     path('chat/', include('chat.urls')),
     path('admin/', admin.site.urls),
     path('', home),
+    path('upload/', FileUploadView.as_view()),
     path('manager/<str:agent_id>', agent, name='agent')
 ]
 

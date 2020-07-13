@@ -61,11 +61,13 @@
         "items": [
           {
             "name": "Upload a File",
-            "postback": "PRESCRIPTION_FILE"
+            "postback": "PRESCRIPTION_FILE",
+            "type": "attachment"
           },
           {
             "name": "Take a Photo",
-            "postback": "PRESCRIPTION_FILE"
+            "postback": "PRESCRIPTION_FILE",
+            "type": "attachment"
           }
         ]
       }

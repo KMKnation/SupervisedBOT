@@ -2,6 +2,7 @@ var $messages = $('.messages-content');
 var serverResponse = "wala";
 var voiceOver = false;
 var speechToText = false;
+var SERVER_URL = window.origin;
 
 var suggession;
 //speech reco
@@ -202,12 +203,33 @@ function sendMessage(msg) {
   if ($.trim(msg) == '') {
     return false;
   }
-  
+
   $('<div class="message message-personal">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
   // fetchmsg() 
 
   $('.message-input').val(null);
   updateScrollbar();
+}
+
+function sendAttachment(message) {
+  var form = new FormData();
+  form.append("file", "casia_I.png");
+
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": SERVER_URL + "/upload/",
+    "method": "POST",
+    "processData": false,
+    "contentType": false,
+    "mimeType": "multipart/form-data",
+    "data": form
+  }
+
+  $.ajax(settings).done(function (response) {
+    console.log(response);
+  });
+
 }
 
 function receiveMessage(message) {
@@ -232,9 +254,28 @@ function receiveMessage(message) {
 
 }
 
+
+function processFunctionQuickReplies(payload) {
+
+  if (payload.postback == 'PRESCRIPTION_FILE') {
+    //show file chooser or camera
+    var myInput = document.createElement('input');
+    myInput.type = "file";
+    myInput.id = "input";
+    myInput.setAttribute("accept", "image/*");
+    myInput.click();
+    myInput.addEventListener('change', function(evt){
+
+    }, false);
+    alert('Upload File');
+    sendMessage(payload.name)
+  }
+}
+
 function getRandom() {
   return '_' + Math.random().toString(36).substr(2, 9);
 }
+
 function receiveQuickReplies(obj) {
 
   if ($('.message-input').val() != '') {
@@ -262,6 +303,12 @@ function receiveQuickReplies(obj) {
         .appendTo($('#' + classId))
         .addClass('btn')
         .click(item, function (event) {
+
+
+          if(event.data.type == 'attachment'){
+            processFunctionQuickReplies(event.data);
+            return
+          }
 
           chatSocket.send(JSON.stringify({
             'message': {
