@@ -1,5 +1,5 @@
 {
-  "greetings": [
+  "getting_started": [
     {
       "say": "Hello! Welcome to Medical Store."
     },
@@ -13,17 +13,73 @@
         "items": [
           {
             "name": "Delhi",
-            "postback": "CITY_SELECTION"
+            "postback": "CITY_SELECTION",
+            "type": "text"
           },
           {
             "name": "Ahmedabad",
-            "postback": "CITY_SELECTION"
+            "postback": "CITY_SELECTION",
+            "type": "text"
           },
           {
             "name": "Mumbai",
-            "postback": "CITY_SELECTION"
+            "postback": "CITY_SELECTION",
+            "type": "text"
           }
         ]
+      }
+    }
+  ],
+  "CITY_SELECTION": [
+    {
+      "say": "Great."
+    },
+    {
+      "say": "What you want to do?",
+      "action": {
+        "type": "HB.QUICK_REPLIES",
+        "items": [
+          {
+            "name": "Search For Medicine",
+            "postback": "SEARCH",
+            "type": "text"
+          },
+          {
+            "name": "Upload Doctor's Prescription",
+            "postback": "UPLOAD",
+            "type": "text"
+          }
+        ]
+      }
+    }
+  ],
+  "UPLOAD": [
+    {
+      "say": "Please attach Doctor's Prescription",
+      "action": {
+        "type": "HB.QUICK_REPLIES",
+        "items": [
+          {
+            "name": "Upload a File",
+            "postback": "PRESCRIPTION_FILE"
+          },
+          {
+            "name": "Take a Photo",
+            "postback": "PRESCRIPTION_FILE"
+          }
+        ]
+      }
+    }
+  ],
+  "SEARCH": [
+    {
+      "say": "Enter the medicine name that you want. (e.g. crocin, saridon)"
+    },
+    {
+      "say": "Press enter to search",
+      "action": {
+        "type": "HB.KEYBOARD",
+        "postback": "SEARCH_WORD"
       }
     }
   ]

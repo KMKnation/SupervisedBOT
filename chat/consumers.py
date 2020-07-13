@@ -26,17 +26,33 @@ class ChatConsumer(WebsocketConsumer):
         self.id = randrange(start=0, stop=10000)
         self.employees.append(self)
         self.accept()
+        self.context = {}
 
     def disconnect(self, close_code):
         self.employees.remove(self)
         pass
 
     def postback(self, textdata):
+
+        if textdata['postback'] == chat_utils.GETTING_STARTED:
+            self.send(text_data=json.dumps(CHAT_MODEL['getting_started']))
+
+        if textdata['postback'] == chat_utils.CITY_SELECTION: #also check for textual
+            self.context[chat_utils.CITY_SELECTION] = textdata['message']['message']
+            self.send(text_data=json.dumps(CHAT_MODEL[chat_utils.CITY_SELECTION]))
+
+        if textdata['postback'] == chat_utils.SEARCH:
+            self.context[chat_utils.SEARCH] = textdata['message']['message']
+            self.send(text_data=json.dumps(CHAT_MODEL[chat_utils.SEARCH]))
+
+        if textdata['postback'] == chat_utils.UPLOAD:
+            self.context[chat_utils.UPLOAD] = textdata['message']['message']
+            self.send(text_data=json.dumps(CHAT_MODEL[chat_utils.UPLOAD]))
+
+
         pass
 
     def received_message(self, text_data_json):
-        message = text_data_json['message']
-
         message = text_data_json['message']
 
         if message.lower() in greetings:
@@ -128,7 +144,9 @@ class ChatConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        print(text_data_json)
         self.evaluate_callback(text_data_json)
+
 
 
 '''

@@ -3,8 +3,6 @@ var serverResponse = "wala";
 var voiceOver = false;
 var speechToText = false;
 
-const getting_started_message = "Hi there, I am Travel Support Bot. I will be taking care of your travel requests and expenses. To get started please choose from the following options";
-
 var suggession;
 //speech reco
 try {
@@ -45,11 +43,7 @@ function listendom(no) {
 $(window).load(function () {
   $messages.mCustomScrollbar();
   setTimeout(function () {
-    serverMessage(getting_started_message);
-    setTimeout(function () {
-      serverMessage("type <b>TRF</b> for Travel Request Form OR \n\
-                     type <b>TECF</b> for Travel Expense Claim Form\n");
-    }, 2000);
+    sendGettingStartedMessage();
   }, 100);
 
 });
@@ -98,52 +92,16 @@ $(".close").on("click", function () {
 
 });
 
+
 chatSocket.onmessage = function (e) {
   const data = JSON.parse(e.data);
   console.log(data);
-  serverMessage(data.message);
-  if (voiceOver) {
-    speechSynthesis.speak(new SpeechSynthesisUtterance(data.message));
-  }
 
-  if (data.context != undefined) {
-    if (data.context.intent != undefined) {
-      context = data.context;
-
-      var intent = data.context.intent;
-      if (intent === 'GETTING_STARTED') {
-        //todo
-        setTimeout(function () {
-          serverMessage("type <b>TRF</b> for Travel Request OR \n\
-                         type <b>TECF</b> for Travel Expense Claim'\n");
-        }, 2000);
-      } else if (intent === 'trf' || intent == 'tecf') {
-
-        setTimeout(function () {
-          $(".popup-overlay, .popup-content").addClass("active");
-
-        }, 4000);
-      } else if (intent === 'FURTHER_PROCESS') {
-        var amessage = ''
-        if (data.context.about === 'trf') {
-          amessage = 'For further processes, we have transfered your request to the Travel Team.'
-        } else {
-          amessage = 'For further processes, we have transfered your request to the Osource Team.'
-        }
-
-        setTimeout(function () {
-          serverMessage(amessage);
-          if (voiceOver) {
-            speechSynthesis.speak(new SpeechSynthesisUtterance(amessage))
-          }
-
-        }, 2000);
-
-      }
-
-
-    }
-  }
+  processMessage(data);
+  // serverMessage(data.message);
+  // if (voiceOver) {
+  //   speechSynthesis.speak(new SpeechSynthesisUtterance(data.message));
+  // }
 
 };
 
@@ -152,12 +110,6 @@ chatSocket.onclose = function (e) {
   console.log(e);
 };
 
-// document.querySelector('#chat-message-input').focus();
-// document.querySelector('#chat-message-input').onkeyup = function (e) {
-//   if (e.keyCode === 13) {  // enter, return
-//     document.querySelector('#chat-message-submit').click();
-//   }
-// };
 
 
 function updateScrollbar() {
@@ -238,4 +190,115 @@ function fetchmsg() {
 
 }
 
+function sendGettingStartedMessage() {
+  chatSocket.send(JSON.stringify({
+    "name": "Delhi",
+    "postback": "HB.GETTING_STARTED"
+  }));
+}
+
+function sendMessage(message) {
+  if ($('.message-input').val() != '') {
+    return false;
+  }
+
+  // var messageContainer = document.createElement
+  $('<div class="message loading new"><figure class="avatar"><img src="/static/chat/css/bot.png" /></figure><span></span></div>').appendTo($('.mCSB_container'));
+  // updateScrollbar();
+
+
+  $('.message.loading').remove();
+  $('<div class="message new"><figure class="avatar"><img src="/static/chat/css/bot.png" /></figure>' + message + '</div>').appendTo($('.mCSB_container')).addClass('new');
+  updateScrollbar();
+
+  // setTimeout(function () {
+  // }, 100 + (Math.random() * 20) * 100);
+
+  if (voiceOver)
+    speechSynthesis.speak(new SpeechSynthesisUtterance(message));
+
+}
+
+function getRandom() {
+  return '_' + Math.random().toString(36).substr(2, 9);
+}
+function sendQuickReplies(obj) {
+
+  if ($('.message-input').val() != '') {
+    return false;
+  }
+
+  // var messageContainer = document.createElement
+  $('<div class="message loading new"><figure class="avatar"><img src="/static/chat/css/bot.png" /></figure><span></span></div>').appendTo($('.mCSB_container'));
+  // updateScrollbar();
+
+  var classId = getRandom();
+  $('.message.loading').remove();
+  $('<div class="message new" id=' + classId + '><figure class="avatar"><img src="/static/chat/css/bot.png" /></figure>' + obj.say + '</div>').appendTo($('.mCSB_container')).addClass('new');
+  updateScrollbar();
+
+  setTimeout(function () {
+    $('<br></br>').appendTo($('#' + classId)).addClass('btn');
+
+    // $('<div class="message quickreply" id="quickreply"></div>').appendTo($('.mCSB_container')).addClass('quickreply');
+    for (var i = 0; i < obj.action.items.length; i++) {
+
+
+      var item = obj.action.items[i];
+      $('<button id=' + item.name + '>' + item.name + '</button>')
+        .appendTo($('#' + classId))
+        .addClass('btn')
+        .click(item, function (event) {
+
+          chatSocket.send(JSON.stringify({
+            'message': {
+              'message': event.data.name,
+              'type': 'text'
+            },
+            'postback': event.data.postback
+          }));
+
+        });
+    }
+
+    // $('<div class="message new"><figure class="avatar"><img src="/static/chat/css/bot.png" /></figure>' + message + '</div>').appendTo($('.mCSB_container')).addClass('new');
+    updateScrollbar();
+
+  }, 500);
+
+}
+
+function sendCards() {
+
+}
+
+function processMessage(data) {
+  if (Array.isArray(data)) {
+    // It is array
+
+    for (var i = 0; i < data.length; i++) {
+      var obj = data[i];
+
+      if (obj.say != undefined) {
+
+        //there is no pending action
+        if (obj.action == undefined) {
+
+          sendMessage(obj.say);
+
+        } else {
+
+          if (obj.action.type == 'HB.QUICK_REPLIES') {
+            sendQuickReplies(obj);
+          } else {
+
+            sendMessage(obj.say);
+          }
+
+        }
+      }
+
+    }
+  }
+}
 
