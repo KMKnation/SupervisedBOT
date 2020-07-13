@@ -197,7 +197,20 @@ function sendGettingStartedMessage() {
   }));
 }
 
-function sendMessage(message) {
+function sendMessage(msg) {
+  // msg = $('.message-input').val();
+  if ($.trim(msg) == '') {
+    return false;
+  }
+  
+  $('<div class="message message-personal">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
+  // fetchmsg() 
+
+  $('.message-input').val(null);
+  updateScrollbar();
+}
+
+function receiveMessage(message) {
   if ($('.message-input').val() != '') {
     return false;
   }
@@ -222,7 +235,7 @@ function sendMessage(message) {
 function getRandom() {
   return '_' + Math.random().toString(36).substr(2, 9);
 }
-function sendQuickReplies(obj) {
+function receiveQuickReplies(obj) {
 
   if ($('.message-input').val() != '') {
     return false;
@@ -258,6 +271,8 @@ function sendQuickReplies(obj) {
             'postback': event.data.postback
           }));
 
+          sendMessage(event.data.name)
+
         });
     }
 
@@ -265,10 +280,6 @@ function sendQuickReplies(obj) {
     updateScrollbar();
 
   }, 500);
-
-}
-
-function sendCards() {
 
 }
 
@@ -284,15 +295,15 @@ function processMessage(data) {
         //there is no pending action
         if (obj.action == undefined) {
 
-          sendMessage(obj.say);
+          receiveMessage(obj.say);
 
         } else {
 
           if (obj.action.type == 'HB.QUICK_REPLIES') {
-            sendQuickReplies(obj);
+            receiveQuickReplies(obj);
           } else {
 
-            sendMessage(obj.say);
+            receiveMessage(obj.say);
           }
 
         }
